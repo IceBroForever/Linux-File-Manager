@@ -11,7 +11,7 @@ app.on("ready", () => {
     })
     
     win.loadURL(url.format({
-        pathname: path.resolve("build", "views", "test", "index.html"),
+        pathname: path.resolve(__dirname, "views", "test", "index.html"),
         protocol: 'file:',
         slashes: true
     }))

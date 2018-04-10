@@ -30,7 +30,11 @@ const config: webpack.Configuration = {
         ],{
             exclude: ['views']
         })
-    ]
+    ],
+    node: {
+        __dirname: false,
+        __filename: false
+    }
 }
 
 export default config
