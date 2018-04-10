@@ -1,13 +1,20 @@
+import fs from "fs"
 import path from "path"
 import webpack from "webpack"
 import HtmlWebpackPlugin from 'html-webpack-plugin'
 import CleanWebpackPlugin from "clean-webpack-plugin"
 
+const viewFilesNames = fs.readdirSync(path.resolve(__dirname, "src/views"))
+const viewNames = viewFilesNames.map((viewPath) => (/(.*).ts(x)?/.exec(viewPath) || [])[1])
+
+let entries: { [index: string]: string } = {}
+for(let viewName of viewNames){
+    entries[viewName] = `./src/views/${viewName}.tsx`
+}
+
 const config: webpack.Configuration = {
     mode: 'development',
-    entry: {
-        test: './src/views/test.tsx'
-    },
+    entry: entries,
     output: {
         path: path.resolve(__dirname, 'build', 'views'),
         filename: '[name]/index.js'
@@ -17,17 +24,21 @@ const config: webpack.Configuration = {
             {
                 test: [/\.ts$/, /\.tsx$/],
                 include: [path.resolve(__dirname, 'src')],
-                loader: 'awesome-typescript-loader'
+                loader: 'awesome-typescript-loader',
+                
             }
         ]
     },
     devtool: 'eval',
     target: 'electron-renderer',
     plugins: [
-        new HtmlWebpackPlugin({
-            filename: 'test/index.html',
-            chunks: ['test']
-        }),
+        ...viewNames.map((viewName) =>
+            new HtmlWebpackPlugin({
+                filename: `${viewName}/index.html`,
+                chunks: [viewName],
+                title: viewName
+            })
+        ),
         new webpack.NoEmitOnErrorsPlugin(),
         new CleanWebpackPlugin([
             'build/views'
