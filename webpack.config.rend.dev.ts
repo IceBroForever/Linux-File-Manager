@@ -5,11 +5,15 @@ import HtmlWebpackPlugin from 'html-webpack-plugin'
 import CleanWebpackPlugin from "clean-webpack-plugin"
 
 const viewFilesNames = fs.readdirSync(path.resolve(__dirname, "src/views"))
-const viewNames = viewFilesNames.map((viewPath) => (/(.*).ts(x)?/.exec(viewPath) || [])[1])
+const viewNames = [];
+for(let viewFileName of viewFilesNames){
+    let match = /(.*)-renderer.tsx/.exec(viewFileName)
+    if(match) viewNames.push(match[1])
+}
 
 let entries: { [index: string]: string } = {}
 for(let viewName of viewNames){
-    entries[viewName] = `./src/views/${viewName}.tsx`
+    entries[viewName] = `./src/views/${viewName}-renderer.tsx`
 }
 
 const config: webpack.Configuration = {
@@ -36,7 +40,8 @@ const config: webpack.Configuration = {
             new HtmlWebpackPlugin({
                 filename: `${viewName}/index.html`,
                 chunks: [viewName],
-                title: viewName
+                title: viewName,
+                template: './src/template.html'
             })
         ),
         new webpack.NoEmitOnErrorsPlugin(),
