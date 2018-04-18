@@ -29,7 +29,8 @@ export default class MainWindow extends Window implements IMainWindow {
         }))
 
         this.window.on("closed", () => {
-            AppManager.removeReferenceToMainWindowById(this.id())
+            AppManager.removeReferenceToMainWindowById(this.id)
+            this.window = null
         })
     }
 

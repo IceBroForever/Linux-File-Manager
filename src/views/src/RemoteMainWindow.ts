@@ -24,3 +24,5 @@ class RemoteMainWindow implements IMainWindow {
         ipcRenderer.send(MainWindowSignals.CHANGE_FULLSCREEN_MODE);
     }
 }
+
+export default RemoteMainWindow.getInstance()

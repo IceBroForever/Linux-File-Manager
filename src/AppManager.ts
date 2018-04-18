@@ -1,6 +1,7 @@
-import { app } from "electron"
+import { app, ipcMain } from "electron"
 import MainWindow from "./MainWindow"
 import FileSystem from "./FileSystem"
+import { MainWindowSignals } from "./common/Signals"
 
 interface MainWindowsDictionary {
     [id: number]: MainWindow
@@ -15,6 +16,21 @@ class App {
         app.on('window-all-closed', () => {
             app.quit()
         })
+
+        ipcMain.on(MainWindowSignals.CLOSE, (event) => {
+            let window : MainWindow = this.mainWindowDictionary[event.sender.id];
+            window.close()
+        });
+
+        ipcMain.on(MainWindowSignals.CHANGE_FULLSCREEN_MODE, (event) => {
+            let window : MainWindow = this.mainWindowDictionary[event.sender.id];
+            window.changeFullscreenMode()
+        });
+
+        ipcMain.on(MainWindowSignals.MINIMIZE, (event) => {
+            let window : MainWindow = this.mainWindowDictionary[event.sender.id];
+            window.minimize()
+        });
     }
 
     public static getInstance(): App {
@@ -29,7 +45,7 @@ class App {
         }
 
         let window: MainWindow = new MainWindow(pathToLoad);
-        this.mainWindowDictionary[window.id()] = window;
+        this.mainWindowDictionary[window.getId()] = window;
     }
 
     public getMainWindowById(id: number): MainWindow {

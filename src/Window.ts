@@ -1,22 +1,20 @@
 import { BrowserWindow, BrowserWindowConstructorOptions } from "electron"
 
 export default abstract class Window {
-    protected window: BrowserWindow | null
+    protected window: BrowserWindow
+    protected id: number
 
     constructor(options : BrowserWindowConstructorOptions | undefined) {
         this.window = new BrowserWindow(options)
+        this.id = this.window.webContents.id
 
         this.window.once('ready-to-show', () => {
             this.window.show()
         })
-
-        this.window.once('closed', () => {
-            this.window = null
-        })
     }
 
-    id() : number {
-        return this.window.id
+    getId() : number {
+        return this.id
     }
 
     abstract close() : void;
