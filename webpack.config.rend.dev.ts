@@ -30,6 +30,14 @@ const config: webpack.Configuration = {
                 include: [path.resolve(__dirname, 'src')],
                 loader: 'awesome-typescript-loader',
                 
+            },
+            {
+                test: [/\.css$/],
+                loaders: ['style-loader', 'css-loader']
+            },
+            {
+                test: [/\.woff(2)?$/],
+                loader: 'file-loader'
             }
         ]
     },

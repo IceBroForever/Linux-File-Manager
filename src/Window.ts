@@ -1,6 +1,6 @@
 import { BrowserWindow, BrowserWindowConstructorOptions } from "electron"
 
-export default class Window {
+export default abstract class Window {
     protected window: BrowserWindow | null
 
     constructor(options : BrowserWindowConstructorOptions | undefined) {
@@ -14,4 +14,10 @@ export default class Window {
             this.window = null
         })
     }
+
+    id() : number {
+        return this.window.id
+    }
+
+    abstract close() : void;
 }

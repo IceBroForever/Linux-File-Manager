@@ -1,10 +1,3 @@
-import { app } from "electron"
-import MainWindow from "./MainWindow"
+import AppManager from "./AppManager"
 
-app.on("ready", () => {
-    new MainWindow()
-})
-
-app.on('window-all-closed', () => {
-    app.quit()
-})
+AppManager.openNewMainWindow()

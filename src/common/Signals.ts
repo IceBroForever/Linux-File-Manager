@@ -1,0 +1,5 @@
+export enum MainWindowSignals {
+    MINIMIZE = "MINIMIZE",
+    CHANGE_FULLSCREEN_MODE = "CHANGE_FULLSCREEN_MODE",
+    CLOSE = "CLOSE"
+}
