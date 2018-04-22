@@ -1,5 +1,5 @@
 import { ipcRenderer } from "electron"
-import { MainWindowSignals } from "../../common/Signals"
+import { MainWindowSignals } from "../../common/MainWindowConnection"
 import IMainWindow from "../../common/IMainWindow"
 
 class RemoteMainWindow implements IMainWindow {

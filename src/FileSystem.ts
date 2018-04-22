@@ -93,20 +93,19 @@ class FileSystem implements IFileSystem {
         });
     }
 
-    async createFile(path: string, name: string): Promise<{}> {
+    async createFile(path: string, name: string, ext: string): Promise<{}> {
         return new Promise((resolve, reject) => {
-            const fileDotExt = pth.extname(name),
-                fileName = name.slice(0, name.lastIndexOf(fileDotExt));
             fs.readdir(path, (error, existNames) => {
                 if (error) reject(error);
+                let filename;
                 main: for (let i = 0; ; i++) {
-                    name = i == 0 ? name : `${fileName}(${i})${fileDotExt}`
+                    filename = i == 0 ? name : `${name}(${i}).${ext}`
                     for (let existName of existNames) {
-                        if (name == existName) continue main;
+                        if (filename == existName) continue main;
                     }
                     break main;
                 }
-                fs.writeFile(pth.join(path, name), "", error => {
+                fs.writeFile(pth.join(path, filename), "", error => {
                     if (error) reject(error);
                     resolve();
                 })
