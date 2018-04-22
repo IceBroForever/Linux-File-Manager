@@ -38,7 +38,7 @@ class App {
         return this.instance
     }
 
-    public openNewMainWindow(pathToLoad: string = FileSystem.getCurrentUserHomeDirection()): void {
+    public openNewMainWindow(pathToLoad: string = FileSystem.getCurrentUserHomeFolder()): void {
         if (!app.isReady()) {
             setTimeout(() => { this.openNewMainWindow(pathToLoad) }, 100);
             return;
