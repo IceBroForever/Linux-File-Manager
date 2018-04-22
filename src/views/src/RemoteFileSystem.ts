@@ -32,6 +32,12 @@ class RemoteFileSystem implements IFileSystem {
                 resolve(answer.value);
             }
             ipcRenderer.once(signal, handler)
+
+            const req: WrappedArgv = {
+                id,
+                argv
+            }
+            ipcRenderer.send(signal, req);
         })
     }
 
@@ -102,7 +108,7 @@ class RemoteFileSystem implements IFileSystem {
                 file
             }
             let value = await this.wrapSignal(FileSystemSignals.REMOVE_FILE, argv)
-            return value as Description[];
+            return value;
         } catch (error) {
             throw error
         }

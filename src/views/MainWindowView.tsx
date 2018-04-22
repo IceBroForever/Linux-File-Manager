@@ -9,6 +9,7 @@ type ComponentProps = Object
 type WithStyleComponentProps = ComponentProps & WithStyles
 
 class MainWindowView extends React.Component<WithStyleComponentProps, {}> {
+
     render() {
         return (
             <TopBar/>
