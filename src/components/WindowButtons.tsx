@@ -20,7 +20,9 @@ const style = () => ({
 
 const theme = createMuiTheme({
     palette: {
-        primary: red,
+        primary: {
+            main: red[600]
+        },
         secondary: {
             main: "#ffffff"
         }

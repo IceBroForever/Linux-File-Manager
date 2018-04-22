@@ -1,9 +1,11 @@
+import { Description, FolderDescription, FileDescription } from "./Descriptions"
+
 export default interface IFileSystem {
-    getCurrentUserHomeDirection() : string;
-    createDirection(path: string, name: string);
-    renameDirection(path: string, newName: string);
-    removeDirection(path: string);
+    getContent(dir: FolderDescription);
+    getCurrentUserHomeFolder(): string;
+    createFolder(path: string, name: string);
+    removeFolder(dir: FolderDescription);
     createFile(path: string, name: string);
-    renameFile(path: string, newName: string);
-    removeFile(path: string)
+    removeFile(file: FileDescription);
+    rename(desc: Description, newName: string);
 }
