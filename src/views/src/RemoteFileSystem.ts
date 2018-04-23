@@ -4,7 +4,7 @@ import {
     CreateFolderArgv, RemoveFolderArgv,
     CreateFileArgv, RemoveFileArgv,
     RenameArgv, WrappedArgv,
-    Argv, Answer
+    Argv, Answer, SetListenerArgv, RemoveListenerArgv
 } from "../../common/FileSystemConnection"
 import { FileDescription, FolderDescription, Description } from "../../common/Descriptions"
 import IFileSystem from "../../common/IFileSystem"
@@ -46,8 +46,7 @@ class RemoteFileSystem implements IFileSystem {
             let argv: GetContentArgv = {
                 dir
             }
-            let value = await this.wrapSignal(FileSystemSignals.GET_CONTENT, argv)
-            return value as Description[];
+            return await this.wrapSignal(FileSystemSignals.GET_CONTENT, argv) as Description[]
         } catch (error) {
             throw error
         }
@@ -56,8 +55,7 @@ class RemoteFileSystem implements IFileSystem {
     async getCurrentUserHomeFolder(): Promise<string> {
         try {
             let argv;
-            let value = await this.wrapSignal(FileSystemSignals.CURRENT_USER_HOME_FOLDER, argv)
-            return value as string;
+            return await this.wrapSignal(FileSystemSignals.CURRENT_USER_HOME_FOLDER, argv) as string
         } catch (error) {
             throw error
         }
@@ -69,8 +67,7 @@ class RemoteFileSystem implements IFileSystem {
                 path,
                 name
             }
-            let value = await this.wrapSignal(FileSystemSignals.CREATE_FOLDER, argv)
-            return value;
+            return await this.wrapSignal(FileSystemSignals.CREATE_FOLDER, argv)
         } catch (error) {
             throw error
         }
@@ -81,8 +78,7 @@ class RemoteFileSystem implements IFileSystem {
             let argv: RemoveFolderArgv = {
                 dir
             }
-            let value = await this.wrapSignal(FileSystemSignals.REMOVE_FOLDER, argv)
-            return value;
+            return await this.wrapSignal(FileSystemSignals.REMOVE_FOLDER, argv)
         } catch (error) {
             throw error
         }
@@ -95,8 +91,7 @@ class RemoteFileSystem implements IFileSystem {
                 name,
                 ext
             }
-            let value = await this.wrapSignal(FileSystemSignals.CREATE_FILE, argv)
-            return value;
+            return await this.wrapSignal(FileSystemSignals.CREATE_FILE, argv)
         } catch (error) {
             throw error
         }
@@ -107,8 +102,7 @@ class RemoteFileSystem implements IFileSystem {
             let argv: RemoveFileArgv = {
                 file
             }
-            let value = await this.wrapSignal(FileSystemSignals.REMOVE_FILE, argv)
-            return value;
+            return await this.wrapSignal(FileSystemSignals.REMOVE_FILE, argv)
         } catch (error) {
             throw error
         }
@@ -120,8 +114,29 @@ class RemoteFileSystem implements IFileSystem {
                 desc,
                 newName
             }
-            let value = await this.wrapSignal(FileSystemSignals.RENAME, argv)
-            return value;
+            return await this.wrapSignal(FileSystemSignals.RENAME, argv)
+        } catch (error) {
+            throw error
+        }
+    }
+
+    async setListenerForChanges(path: string): Promise<number> {
+        try {
+            let argv: SetListenerArgv = {
+                path
+            }
+            return await this.wrapSignal(FileSystemSignals.SET_LISTENER, argv) as number
+        } catch (error) {
+            throw error
+        }
+    }
+
+    async removeListenerForChanges(id: number): Promise<{}>{
+        try {
+            let argv: RemoveListenerArgv = {
+                id
+            }
+            return await this.wrapSignal(FileSystemSignals.REMOVE_LISTENER, argv)
         } catch (error) {
             throw error
         }

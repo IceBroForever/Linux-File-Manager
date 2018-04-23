@@ -46,4 +46,8 @@ export default class MainWindow extends Window implements IMainWindow {
         let enabled = this.window.isFullScreen();
         this.window.setFullScreen(!enabled);
     }
+
+    send(signal, argv): void {
+        this.window.webContents.send(signal, argv);
+    }
 }

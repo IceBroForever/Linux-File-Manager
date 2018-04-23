@@ -1,7 +1,7 @@
 import fs from "fs"
 import os from "os"
 import pth from "path"
-import { ipcMain } from "electron"
+import { ipcMain, app } from "electron"
 import IFileSystem from "./common/IFileSystem"
 import { FileDescription, FolderDescription, Description } from "./common/Descriptions"
 import {
@@ -9,13 +9,19 @@ import {
     CreateFolderArgv, RemoveFolderArgv,
     CreateFileArgv, RemoveFileArgv,
     RenameArgv, WrappedArgv,
-    Argv, Answer
+    Argv, Answer, SetListenerArgv, RemoveListenerArgv, Listener
 } from "./common/FileSystemConnection"
+import AppManager from "./AppManager"
+import FileSystemWatcherManager from "./FileSystemWatcherManager"
 
 class FileSystem implements IFileSystem {
     private static instance: FileSystem;
 
+    private watcherManager: FileSystemWatcherManager;
+
     private constructor() {
+        this.watcherManager = new FileSystemWatcherManager();
+
         const handleReq = async (event, id: number, signal: FileSystemSignals, func) => {
             let answer: Answer
             try {
@@ -36,6 +42,10 @@ class FileSystem implements IFileSystem {
             }
         }
 
+        const broadcast = (signal: FileSystemSignals, argv: Listener) => {
+            AppManager.sendToAllMainWindows(signal, argv);
+        }
+
         ipcMain.on(FileSystemSignals.GET_CONTENT, async (event, req: WrappedArgv) => {
             const { id } = req;
             const argv = req.argv as GetContentArgv
@@ -45,12 +55,10 @@ class FileSystem implements IFileSystem {
         })
 
         ipcMain.on(FileSystemSignals.CURRENT_USER_HOME_FOLDER, (event, req: WrappedArgv) => {
-            let answer: Answer = {
-                id: req.id,
-                error: null,
-                value: this.getCurrentUserHomeFolder()
-            }
-            event.sender.send(FileSystemSignals.CURRENT_USER_HOME_FOLDER, answer);
+            const { id } = req;
+            handleReq(event, id, FileSystemSignals.CURRENT_USER_HOME_FOLDER, async () => {
+                return this.getCurrentUserHomeFolder()
+            })
         })
 
         ipcMain.on(FileSystemSignals.CREATE_FOLDER, async (event, req: WrappedArgv) => {
@@ -92,6 +100,24 @@ class FileSystem implements IFileSystem {
                 return this.rename(argv.desc, argv.newName)
             })
         })
+
+        ipcMain.on(FileSystemSignals.SET_LISTENER, async (event, req: WrappedArgv) => {
+            const { id } = req;
+            const argv = req.argv as SetListenerArgv;
+            handleReq(event, id, FileSystemSignals.SET_LISTENER, async () => {
+                return this.setListenerForChanges(argv.path, (idOfListener: number) => {
+                    broadcast(FileSystemSignals.LISTENER, { id: idOfListener })
+                });
+            })
+        })
+
+        ipcMain.on(FileSystemSignals.REMOVE_LISTENER, async (event, req: WrappedArgv) => {
+            const { id } = req;
+            const argv = req.argv as RemoveListenerArgv;
+            handleReq(event, id, FileSystemSignals.REMOVE_LISTENER, async () => {
+                return this.removeListenerForChanges(argv.id);
+            })
+        })
     }
 
     public static getInstance(): FileSystem {
@@ -99,7 +125,7 @@ class FileSystem implements IFileSystem {
         return this.instance;
     }
 
-    getCurrentUserHomeFolder(): string {
+    async getCurrentUserHomeFolder(): Promise<string> {
         return os.homedir();
     }
 
@@ -221,6 +247,15 @@ class FileSystem implements IFileSystem {
                 })
             })
         });
+    }
+
+    async setListenerForChanges(path: string, onChange: (id: number) => void): Promise<number> {
+        return this.watcherManager.setListener(path, onChange);
+    }
+
+    async removeListenerForChanges(id: number): Promise<{}> {
+        this.watcherManager.removeListener(id);
+        return;
     }
 }
 

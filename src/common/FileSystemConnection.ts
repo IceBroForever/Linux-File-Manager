@@ -26,7 +26,16 @@ export type RenameArgv = {
     newName: string
 }
 
-export type Argv = GetContentArgv | CreateFolderArgv | RemoveFolderArgv | CreateFileArgv | RemoveFileArgv | RenameArgv | undefined
+export type SetListenerArgv = {
+    path: string
+}
+
+export type RemoveListenerArgv = {
+    id: number;
+}
+
+export type Argv = GetContentArgv | CreateFolderArgv | RemoveFolderArgv| CreateFileArgv
+    | RemoveFileArgv | RenameArgv | SetListenerArgv | RemoveListenerArgv | undefined
 
 export type WrappedArgv = {
     id: number,
@@ -39,6 +48,10 @@ export type Answer = {
     value: any
 }
 
+export type Listener = {
+    id: number
+}
+
 export enum FileSystemSignals {
     CURRENT_USER_HOME_FOLDER = "CURRENT_USER_HOME_FOLDER",
     GET_CONTENT = "GET_CONTENT",
@@ -46,5 +59,8 @@ export enum FileSystemSignals {
     REMOVE_FOLDER = "REMOVE_FOLDER",
     CREATE_FILE = "CREATE_FILE",
     REMOVE_FILE = "REMOVE_FILE",
-    RENAME = "RENAME"
+    RENAME = "RENAME",
+    SET_LISTENER = "SET_LISTENER",
+    REMOVE_LISTENER = "REMOVE_LISTENER",
+    LISTENER = "LISTENER"
 }

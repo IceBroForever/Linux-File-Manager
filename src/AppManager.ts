@@ -33,27 +33,38 @@ class App {
         });
     }
 
-    public static getInstance(): App {
+    static getInstance(): App {
         if (!this.instance) this.instance = new App()
         return this.instance
     }
 
-    public openNewMainWindow(pathToLoad: string = FileSystem.getCurrentUserHomeFolder()): void {
-        if (!app.isReady()) {
-            setTimeout(() => { this.openNewMainWindow(pathToLoad) }, 100);
-            return;
-        }
+    openNewMainWindow(pathToLoad: string = undefined): void {
+        const f = async () => {
+            if(!pathToLoad) pathToLoad = await FileSystem.getCurrentUserHomeFolder();
 
-        let window: MainWindow = new MainWindow(pathToLoad);
-        this.mainWindowDictionary[window.getId()] = window;
+            if (!app.isReady()) {
+                setTimeout(() => { this.openNewMainWindow(pathToLoad) }, 100);
+                return;
+            }
+    
+            let window: MainWindow = new MainWindow(pathToLoad);
+            this.mainWindowDictionary[window.getId()] = window;
+        }
+        f();
     }
 
-    public getMainWindowById(id: number): MainWindow {
+    getMainWindowById(id: number): MainWindow {
         return this.mainWindowDictionary[id]
     }
 
-    public removeReferenceToMainWindowById(id: number): void {
+    removeReferenceToMainWindowById(id: number): void {
         delete this.mainWindowDictionary[id]
+    }
+
+    sendToAllMainWindows(signal, argv): void{
+        for(let id in this.mainWindowDictionary){
+            this.mainWindowDictionary[id].send(signal, argv);
+        }
     }
 }
 
