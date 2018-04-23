@@ -8,12 +8,16 @@ import {
 } from "../../common/FileSystemConnection"
 import { FileDescription, FolderDescription, Description } from "../../common/Descriptions"
 import IFileSystem from "../../common/IFileSystem"
+import RemoteFileSystemWatcherManager from "./RemoteFileSystemWatcherManager";
 
 class RemoteFileSystem implements IFileSystem {
     private static instance: RemoteFileSystem;
+    private watcherManager: RemoteFileSystemWatcherManager;
     private id: number = 0;
 
-    private constructor() { }
+    private constructor() {
+        this.watcherManager = new RemoteFileSystemWatcherManager()
+    }
 
     static getInstance(): RemoteFileSystem {
         if (this.instance == null) this.instance = new RemoteFileSystem();
@@ -120,25 +124,32 @@ class RemoteFileSystem implements IFileSystem {
         }
     }
 
-    async setListenerForChanges(path: string): Promise<number> {
-        try {
-            let argv: SetListenerArgv = {
-                path
-            }
-            return await this.wrapSignal(FileSystemSignals.SET_LISTENER, argv) as number
-        } catch (error) {
-            throw error
+    async setListenerForChanges(path: string, onChange: (id: number) => void): Promise<number> {
+        if(!this.watcherManager.isContainWatcher(path)){
+            try {
+                let argv: SetListenerArgv = {
+                    path
+                }
+                let id =  await this.wrapSignal(FileSystemSignals.SET_LISTENER, argv) as number
+                this.watcherManager.createWatcher(path, id);
+            } catch (error) {
+                throw error
+            }    
         }
+        return this.watcherManager.setListener(path, onChange);
     }
 
     async removeListenerForChanges(id: number): Promise<{}>{
-        try {
-            let argv: RemoveListenerArgv = {
-                id
+        let removedWatcherRealId = this.watcherManager.removeListener(id);
+        if(removedWatcherRealId){
+            try {
+                let argv: RemoveListenerArgv = {
+                    id: removedWatcherRealId
+                }
+                return await this.wrapSignal(FileSystemSignals.REMOVE_LISTENER, argv)
+            } catch (error) {
+                throw error
             }
-            return await this.wrapSignal(FileSystemSignals.REMOVE_LISTENER, argv)
-        } catch (error) {
-            throw error
         }
     }
 }
