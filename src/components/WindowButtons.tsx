@@ -1,18 +1,25 @@
 import * as React from "react";
 import RemoteMainWindow from "../views/src/RemoteMainWindow"
 import IconButton from "material-ui/IconButton"
+import MoreIcon from "@material-ui/icons/MoreHoriz"
 import MinimizeIcon from "@material-ui/icons/Remove"
 import FullscreenIcon from "@material-ui/icons/Fullscreen"
 import CloseIcon from "@material-ui/icons/Cancel"
-import withStyles from "material-ui/styles/withStyles"
-import { WithStyles } from "material-ui/styles/withStyles"
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import withStyles, { WithStyles } from "material-ui/styles/withStyles"
 import createMuiTheme from "material-ui/styles/createMuiTheme"
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider"
-import withTheme from "material-ui/styles/withTheme"
-import { WithTheme } from "material-ui/styles/withTheme"
 import red from "material-ui/colors/red"
+import Menu from 'material-ui/Menu';
+import ExpansionPanel, {
+    ExpansionPanelDetails,
+    ExpansionPanelSummary,
+} from 'material-ui/ExpansionPanel';
 
 const style = () => ({
+    container: {
+        marginRight: "-15px"
+    },
     button: {
         "-webkit-app-region": "no-drag"
     }
@@ -29,17 +36,70 @@ const theme = createMuiTheme({
     }
 })
 
-type ComponentProps = Object
-type ComponentPropsWithStyle = ComponentProps & WithStyles<'button'>
-type ComponentPropsWithStyleAndTheme = ComponentPropsWithStyle & WithTheme
+type ComponentState = {
+    menuAnchor: any,
+    expandedPanel: string
+}
 
-class WindowButtons extends React.Component<ComponentPropsWithStyleAndTheme>{
+type ComponentProps = Object
+type ComponentPropsWithStyle = ComponentProps & WithStyles<'button' | 'container'>
+
+class WindowButtons extends React.Component<ComponentPropsWithStyle, ComponentState>{
+    state = {
+        menuAnchor: null,
+        expandedPanel: null
+    }
+
     render() {
         const { classes } = this.props
 
         return (
             <MuiThemeProvider theme={theme}>
-                <div>
+                <div className={classes.container}>
+                    <IconButton
+                        aria-owns={this.state.menuAnchor ? 'menu' : null}
+                        aria-haspopup="true"
+                        color="secondary"
+                        className={classes.button}
+                        onClick={event => {
+                            this.setState({
+                                menuAnchor: event.currentTarget
+                            })
+                        }}
+                    >
+                        <MoreIcon />
+                    </IconButton>
+                    <Menu
+                        style={{ width: "100px;" }}
+                        id="menu"
+                        anchorEl={this.state.menuAnchor}
+                        open={this.state.menuAnchor != null}
+                        onClose={() => { this.setState({ menuAnchor: null, expandedPanel: null }) }}
+                    >
+                        <ExpansionPanel
+                            expanded={this.state.expandedPanel == 'panel1'}
+                            onClick={() => this.setState({ expandedPanel: 'panel1' })}
+                        >
+                            <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+                                1
+                            </ExpansionPanelSummary>
+                            <ExpansionPanelDetails>
+                                Something
+                            </ExpansionPanelDetails>
+                        </ExpansionPanel>
+                        <ExpansionPanel
+                            expanded={this.state.expandedPanel == 'panel2'}
+                            onClick={() => this.setState({ expandedPanel: 'panel2' })}
+                        >
+                            <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+                                2
+                            </ExpansionPanelSummary>
+                            <ExpansionPanelDetails>
+                                Something
+                            </ExpansionPanelDetails>
+                        </ExpansionPanel>
+                    </Menu>
+
                     <IconButton color="secondary" className={classes.button} onClick={() => { RemoteMainWindow.minimize() }}>
                         <MinimizeIcon />
                     </IconButton>
@@ -55,4 +115,4 @@ class WindowButtons extends React.Component<ComponentPropsWithStyleAndTheme>{
     }
 }
 
-export default withStyles(style)<ComponentProps>(withTheme()<ComponentPropsWithStyle>(WindowButtons));
+export default withStyles(style)<ComponentProps>(WindowButtons);

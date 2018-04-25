@@ -1,7 +1,7 @@
 import { FileDescription, FolderDescription, Description } from "./Descriptions"
 
 export type GetContentArgv = {
-    dir: FolderDescription
+    path: string
 }
 
 export type CreateFolderArgv = {
@@ -9,7 +9,9 @@ export type CreateFolderArgv = {
     name: string
 }
 
-export type RemoveFolderArgv = GetContentArgv
+export type RemoveFolderArgv = {
+    dir: FolderDescription
+}
 
 export type CreateFileArgv = {
     path: string,

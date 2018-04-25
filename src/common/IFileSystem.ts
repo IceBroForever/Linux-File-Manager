@@ -1,7 +1,7 @@
 import { Description, FolderDescription, FileDescription } from "./Descriptions"
 
 export default interface IFileSystem {
-    getContent(dir: FolderDescription): Promise<Description[]>;
+    getContent(path: string): Promise<Description[]>;
     getCurrentUserHomeFolder(): Promise<string>;
     createFolder(path: string, name: string): Promise<{}>;
     removeFolder(dir: FolderDescription): Promise<{}>;

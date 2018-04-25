@@ -50,7 +50,7 @@ class FileSystem implements IFileSystem {
             const { id } = req;
             const argv = req.argv as GetContentArgv
             handleReq(event, id, FileSystemSignals.GET_CONTENT, async () => {
-                return this.getContent(argv.dir)
+                return this.getContent(argv.path)
             })
         })
 
@@ -129,11 +129,11 @@ class FileSystem implements IFileSystem {
         return os.homedir();
     }
 
-    private generateDescription(dir: FolderDescription, fullName: string, stats: fs.Stats): Description {
+    private generateDescription(path: string, fullName: string, stats: fs.Stats): Description {
         if (stats.isDirectory()) {
             return {
                 name: fullName,
-                path: pth.join(dir.path, fullName),
+                path: pth.join(path, fullName),
                 created: stats.ctimeMs,
                 modified: stats.ctimeMs,
                 size: stats.size
@@ -141,34 +141,34 @@ class FileSystem implements IFileSystem {
         }
         let dotExt = pth.extname(fullName);
         return {
-            name: fullName.slice(0, -dotExt.length),
+            name: dotExt.length > 0 ? fullName.slice(0, -dotExt.length) : fullName,
             ext: dotExt.slice(1),
-            path: pth.join(dir.path, fullName),
+            path: pth.join(path, fullName),
             created: stats.ctimeMs,
             modified: stats.ctimeMs,
             size: stats.size
         }
     }
 
-    async getStats(dir: FolderDescription, name: string): Promise<fs.Stats> {
+    async getStats(path: string, name: string): Promise<fs.Stats> {
         return new Promise<fs.Stats>((resolve, reject) => {
-            fs.stat(pth.join(dir.path, name), (error, stats) => {
+            fs.stat(pth.join(path, name), (error, stats) => {
                 if (error) reject(error);
                 resolve(stats);
             })
         })
     }
 
-    async getContent(dir: FolderDescription): Promise<Description[]> {
+    async getContent(path: string): Promise<Description[]> {
         return new Promise<Description[]>((resolve, reject) => {
-            fs.readdir(dir.path, async (error, files) => {
+            fs.readdir(path, async (error, files) => {
                 if (error) reject(error);
                 let statsPromises: Promise<fs.Stats>[] = files.map(file => {
-                    return this.getStats(dir, file);
+                    return this.getStats(path, file);
                 });
                 let stats = await Promise.all(statsPromises);
                 let descriptions = stats.map((stats, i) => {
-                    return this.generateDescription(dir, files[i], stats);
+                    return this.generateDescription(path, files[i], stats);
                 })
                 resolve(descriptions);
             });

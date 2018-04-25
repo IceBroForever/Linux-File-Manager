@@ -45,10 +45,10 @@ class RemoteFileSystem implements IFileSystem {
         })
     }
 
-    async getContent(dir: FolderDescription): Promise<Description[]> {
+    async getContent(path: string): Promise<Description[]> {
         try {
             let argv: GetContentArgv = {
-                dir
+                path
             }
             return await this.wrapSignal(FileSystemSignals.GET_CONTENT, argv) as Description[]
         } catch (error) {
