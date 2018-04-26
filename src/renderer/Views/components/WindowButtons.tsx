@@ -1,5 +1,5 @@
 import * as React from "react";
-import RemoteMainWindow from "../views/src/RemoteMainWindow"
+import RemoteMainWindow from "../../RemoteMainWindow"
 import IconButton from "material-ui/IconButton"
 import MoreIcon from "@material-ui/icons/MoreHoriz"
 import MinimizeIcon from "@material-ui/icons/Remove"
@@ -13,7 +13,7 @@ import red from "material-ui/colors/red"
 import Menu from 'material-ui/Menu'
 import Radio, { RadioGroup } from 'material-ui/Radio'
 import { FormLabel, FormControl, FormControlLabel, FormHelperText, FormGroup } from 'material-ui/Form'
-import DrawStrategy from "../views/src/DrawStrategy"
+import DrawStrategy from "./DrawStrategy"
 import Checkbox from 'material-ui/Checkbox'
 
 const style = () => ({

@@ -1,4 +1,4 @@
-import { Description } from "../../common/Descriptions"
+import { Description } from "../../../common/Descriptions"
 
 type DrawStrategyProps = {
     description: Description,

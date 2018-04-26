@@ -4,7 +4,7 @@ import CleanWebpackPlugin from "clean-webpack-plugin"
 
 const config: webpack.Configuration = {
     mode: 'development',
-    entry: './src/main.ts',
+    entry: './src/main/main.ts',
     output: {
         path: path.resolve(__dirname, 'build'),
         filename: '[name].js'

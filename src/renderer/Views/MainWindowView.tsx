@@ -1,9 +1,9 @@
 import * as React from "react";
 import withStyles, { WithStyles } from "material-ui/styles/withStyles"
-import TopBar from "../components/TopBar"
-import DirectoryBrowser from "../components/DirectoryBrowser"
-import DrawStrategy from "./src/DrawStrategy"
-import FolderElement from "../components/FolderElement"
+import TopBar from "./components/TopBar"
+import DirectoryBrowser from "./components/DirectoryBrowser"
+import DrawStrategy from "./components/DrawStrategy"
+import FolderElement from "./components/FolderElement"
 
 const style = theme => ({
     container: {

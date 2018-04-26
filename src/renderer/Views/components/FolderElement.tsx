@@ -1,7 +1,7 @@
 import * as React from 'react'
 import withStyles, { WithStyles } from 'material-ui/styles/withStyles'
-import { FileDescription, FolderDescription, Description } from "../common/Descriptions"
-import RemoteFileSystem from "../views/src/RemoteFileSystem"
+import { FileDescription, FolderDescription, Description } from "../../../common/Descriptions"
+import RemoteFileSystem from "../../RemoteFileSystem/RemoteFileSystem"
 import FolderIcon from "@material-ui/icons/Folder"
 import OpenFolderIcon from "@material-ui/icons/FolderOpen"
 import FileElement from "./FileElement"

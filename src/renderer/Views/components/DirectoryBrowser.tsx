@@ -1,9 +1,9 @@
 import * as React from "react"
 import withStyles, { WithStyles } from "material-ui/styles/withStyles"
-import RemoteFileSystem from "../views/src/RemoteFileSystem"
-import { Description } from "../common/Descriptions";
+import RemoteFileSystem from "../../RemoteFileSystem/RemoteFileSystem"
+import { Description } from "../../../common/Descriptions";
 import CircularProgress from 'material-ui/Progress/CircularProgress';
-import FileRunner from '../views/src/FileRunner'
+import FileRunner from '../../FileRunner'
 
 const style = () => ({
     container: {

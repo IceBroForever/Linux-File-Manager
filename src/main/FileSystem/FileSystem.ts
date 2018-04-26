@@ -2,16 +2,16 @@ import fs from "fs"
 import os from "os"
 import pth from "path"
 import { ipcMain, app } from "electron"
-import IFileSystem from "./common/IFileSystem"
-import { FileDescription, FolderDescription, Description } from "./common/Descriptions"
+import IFileSystem from "../../common/IFileSystem"
+import { FileDescription, FolderDescription, Description } from "../../common/Descriptions"
 import {
     FileSystemSignals, GetContentArgv,
     CreateFolderArgv, RemoveFolderArgv,
     CreateFileArgv, RemoveFileArgv,
     RenameArgv, WrappedArgv,
     Argv, Answer, SetListenerArgv, RemoveListenerArgv, Listener
-} from "./common/FileSystemConnection"
-import AppManager from "./AppManager"
+} from "../../common/FileSystemConnection"
+import AppManager from "../AppManager"
 import FileSystemWatcherManager from "./FileSystemWatcherManager"
 
 class FileSystem implements IFileSystem {

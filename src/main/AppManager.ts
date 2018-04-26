@@ -1,7 +1,7 @@
 import { app, ipcMain } from "electron"
 import MainWindow from "./MainWindow"
-import FileSystem from "./FileSystem"
-import { MainWindowSignals } from "./common/MainWindowConnection"
+import FileSystem from "./FileSystem/FileSystem"
+import { MainWindowSignals } from "../common/MainWindowConnection"
 
 interface MainWindowsDictionary {
     [id: number]: MainWindow

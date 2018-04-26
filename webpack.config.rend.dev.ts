@@ -4,7 +4,7 @@ import webpack from "webpack"
 import HtmlWebpackPlugin from 'html-webpack-plugin'
 import CleanWebpackPlugin from "clean-webpack-plugin"
 
-const viewFilesNames = fs.readdirSync(path.resolve(__dirname, "src/views"))
+const viewFilesNames = fs.readdirSync(path.resolve(__dirname, "src/renderer/Views"))
 const viewNames = [];
 for(let viewFileName of viewFilesNames){
     let match = /(.*)-renderer.tsx/.exec(viewFileName)
@@ -13,7 +13,7 @@ for(let viewFileName of viewFilesNames){
 
 let entries: { [index: string]: string } = {}
 for(let viewName of viewNames){
-    entries[viewName] = `./src/views/${viewName}-renderer.tsx`
+    entries[viewName] = `./src/renderer/Views/${viewName}-renderer.tsx`
 }
 
 const config: webpack.Configuration = {

@@ -1,11 +1,11 @@
-import DrawStrategyProps from "../views/src/DrawStrategyProps"
+import DrawStrategyProps from "./DrawStrategyProps"
 import withStyles, { WithStyles } from "material-ui/styles/withStyles"
 import withTheme, { WithTheme } from "material-ui/styles/withTheme"
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider"
 import createMuiTheme from "material-ui/styles/createMuiTheme"
 import FolderIcon from "@material-ui/icons/Folder"
 import FileIcon from "@material-ui/icons/InsertDriveFile"
-import { Description, FolderDescription, FileDescription } from "../common/Descriptions"
+import { Description, FolderDescription, FileDescription } from "../../../common/Descriptions"
 import React from "react";
 const { app } = require("electron").remote
 

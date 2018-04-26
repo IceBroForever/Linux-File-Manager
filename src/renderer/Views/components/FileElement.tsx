@@ -1,6 +1,6 @@
 import * as React from 'react'
 import withStyles, { WithStyles } from 'material-ui/styles/withStyles'
-import { FileDescription } from "../common/Descriptions"
+import { FileDescription } from "../../../common/Descriptions"
 import FileIcon from "@material-ui/icons/InsertDriveFile"
 import OpenFolderIcon from "@material-ui/icons/FolderOpen"
 
