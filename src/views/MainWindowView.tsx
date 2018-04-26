@@ -3,6 +3,7 @@ import withStyles, { WithStyles } from "material-ui/styles/withStyles"
 import TopBar from "../components/TopBar"
 import DirectoryBrowser from "../components/DirectoryBrowser"
 import DrawStrategy from "./src/DrawStrategy"
+import FolderElement from "../components/FolderElement"
 
 const style = theme => ({
     container: {
@@ -15,6 +16,13 @@ const style = theme => ({
     "flex-container": {
         flex: 1,
         display: "flex"
+    },
+    treeContainer: {
+        position: 'relative' as 'relative',
+        width: '200px',
+        height: '100%',
+        borderRight: '2px solid #616161',
+        overflow: 'auto' as 'auto'
     }
 })
 
@@ -27,7 +35,7 @@ type ComponentState = {
 type ComponentProps = {
     pathToLoad: string
 }
-type WithStyleComponentProps = ComponentProps & WithStyles<"flex-container" | 'container'>
+type WithStyleComponentProps = ComponentProps & WithStyles<"flex-container" | 'container' | 'treeContainer'>
 
 class MainWindowView extends React.Component<WithStyleComponentProps, ComponentState> {
     state = {
@@ -42,7 +50,7 @@ class MainWindowView extends React.Component<WithStyleComponentProps, ComponentS
         })
     }
 
-    changeDrawStrategy(drawStrategy: any, showHidden: boolean){
+    changeDrawStrategy(drawStrategy: any, showHidden: boolean) {
         this.setState({
             drawStrategy,
             showHidden
@@ -63,6 +71,9 @@ class MainWindowView extends React.Component<WithStyleComponentProps, ComponentS
                     }}
                 />
                 <div className={classes['flex-container']}>
+                    <div className={classes.treeContainer}>
+                        <FolderElement showHidden={this.state.showHidden} onDoubleClick={(path) => { this.changeCurrentPath(path) }} />
+                    </div>
                     <DirectoryBrowser
                         drawStrategy={this.state.drawStrategy}
                         currentPath={this.state.currentPath}
