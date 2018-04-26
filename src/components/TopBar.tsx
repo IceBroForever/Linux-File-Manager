@@ -24,7 +24,10 @@ const style = theme => ({
 
 type ComponentProps = {
     onChangePath: (path: string) => void,
-    path: string
+    path: string,
+    drawStrategy: any,
+    showHidden: boolean,
+    onDrawStrategyChanged: (drawStrategy: any, showHidden: boolean) => void
 }
 type ComponentPropsWithStyle = ComponentProps & WithStyles<'appbar' | 'toolbar' | 'empty' | 'appbar-container'>
 
@@ -38,7 +41,11 @@ class TopBar extends React.Component<ComponentPropsWithStyle>{
                     <Toolbar className={classes.toolbar}>
                         <NavigationButtons onChangePath={this.props.onChangePath} path={this.props.path} />
                         <div className={classes.empty} />
-                        <WindowButtons />
+                        <WindowButtons
+                            drawStrategy={this.props.drawStrategy}
+                            showHidden={this.props.showHidden}
+                            onDrawStrategyChanged={this.props.onDrawStrategyChanged}
+                        />
                     </Toolbar>
                 </AppBar>
             </div>

@@ -42,11 +42,26 @@ class MainWindowView extends React.Component<WithStyleComponentProps, ComponentS
         })
     }
 
+    changeDrawStrategy(drawStrategy: any, showHidden: boolean){
+        this.setState({
+            drawStrategy,
+            showHidden
+        })
+    }
+
     render() {
         const { classes } = this.props
         return (
             <div className={classes.container}>
-                <TopBar onChangePath={(path) => { this.changeCurrentPath(path) }} path={this.state.currentPath} />
+                <TopBar
+                    onChangePath={(path) => { this.changeCurrentPath(path) }}
+                    path={this.state.currentPath}
+                    drawStrategy={this.state.drawStrategy}
+                    showHidden={this.state.showHidden}
+                    onDrawStrategyChanged={(drawStrategy, showHidden) => {
+                        this.changeDrawStrategy(drawStrategy, showHidden)
+                    }}
+                />
                 <div className={classes['flex-container']}>
                     <DirectoryBrowser
                         drawStrategy={this.state.drawStrategy}

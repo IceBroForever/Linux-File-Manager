@@ -12,26 +12,44 @@ const { app } = require("electron").remote
 const styles = () => ({
     container: {
         position: 'relative' as 'relative',
-        width: '110px',
+        width: '100%',
         display: 'flex',
-        "justify-content": 'center',
-        "align-items": 'center',
-        flexDirection: 'column' as 'column'
+        flexWrap: 'nowrap' as 'nowrap',
+        "align-items": 'center'
     },
     icon: {
         position: 'relative' as 'relative',
-        width: '70px',
-        height: '70px',
-        marginBottom: '10px',
-        marginTop: '10px'
+        width: '30px',
+        height: '30px',
+        margin: '5px 10px'
     },
     name: {
         position: 'relative' as 'relative',
-        width: '100px',
-        textAlign: 'center' as 'center',
+        width: '150px',
         overflow: 'hidden' as 'hidden',
         textOverflow: 'ellipsis',
-        marginBottom: '5px'
+        marginRight: '10px'
+    },
+    type: {
+        position: 'relative' as 'relative',
+        width: '100px',
+        overflow: 'hidden' as 'hidden',
+        textOverflow: 'ellipsis',
+        marginRight: '10px'
+    },
+    size: {
+        position: 'relative' as 'relative',
+        width: '100px',
+        overflow: 'hidden' as 'hidden',
+        textOverflow: 'ellipsis',
+        marginRight: '10px'
+    },
+    time: {
+        position: 'relative' as 'relative',
+        width: '200px',
+        overflow: 'hidden' as 'hidden',
+        textOverflow: 'ellipsis',
+        marginRight: '10px'
     }
 })
 
@@ -44,9 +62,10 @@ const theme = createMuiTheme({
 })
 
 type DrawStrategyPropsWithTheme = DrawStrategyProps & WithTheme
-type DrawStrategyPropsWithStyles = DrawStrategyPropsWithTheme & WithStyles<'container' | 'icon' | 'name'>
+type DrawStrategyPropsWithStyles = DrawStrategyPropsWithTheme
+    & WithStyles<'container' | 'icon' | 'name' | 'type' | 'size' | 'time'>
 
-class IconDrawStrategyInternal extends React.Component<DrawStrategyPropsWithStyles> {
+class ListDrawStrategyInternal extends React.Component<DrawStrategyPropsWithStyles> {
     state = {
         path: this.props.description.path
     }
@@ -69,12 +88,18 @@ class IconDrawStrategyInternal extends React.Component<DrawStrategyPropsWithStyl
         if (description.name.charAt(0) == '.' && !showHidden) return null;
 
         let filename: string = description.name
+        let type = 'Folder'
         let Icon = FolderIcon
         if ("ext" in description) {
-            if ((description as FileDescription).ext.length != 0)
-                filename += '.' + (description as FileDescription).ext
             Icon = FileIcon
+            type = description.ext.toUpperCase() + ' file'
         }
+
+        let size;
+        if (description.size / 1073741824 > 1) size = `${Math.round(description.size / 1073741824 * 100) / 100} Gb`
+        else if (description.size / 1048576 > 1) size = `${Math.round(description.size / 1048576 * 100) / 100} Mb`
+        else if (description.size / 1024 > 1) size = `${Math.round(description.size / 1024 * 100) / 100} Kb`
+        else size = `${description.size} b`
 
         return (
             <div
@@ -102,14 +127,44 @@ class IconDrawStrategyInternal extends React.Component<DrawStrategyPropsWithStyl
                 >
                     {filename}
                 </div>
+                <div
+                    className={classes.type}
+                    style={{
+                        color: selected
+                            ? theme.palette.primary.contrastText
+                            : theme.palette.secondary.contrastText
+                    }}
+                >
+                    {type}
+                </div>
+                <div
+                    className={classes.size}
+                    style={{
+                        color: selected
+                            ? theme.palette.primary.contrastText
+                            : theme.palette.secondary.contrastText
+                    }}
+                >
+                    {size}
+                </div>
+                <div
+                    className={classes.time}
+                    style={{
+                        color: selected
+                            ? theme.palette.primary.contrastText
+                            : theme.palette.secondary.contrastText
+                    }}
+                >
+                    {new Date(description.created).toLocaleString()}
+                </div>
             </div>
         );
     }
 }
 
-const StyledIconDrawStrategy = withTheme()<DrawStrategyProps>(withStyles(styles)<DrawStrategyPropsWithTheme>(IconDrawStrategyInternal))
+const StyledIconDrawStrategy = withTheme()<DrawStrategyProps>(withStyles(styles)<DrawStrategyPropsWithTheme>(ListDrawStrategyInternal))
 
-export default class IconDrawStrategy extends React.Component<DrawStrategyProps>{
+export default class ListDrawStrategy extends React.Component<DrawStrategyProps>{
     render() {
         return (
             <MuiThemeProvider theme={theme}>

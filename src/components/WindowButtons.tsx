@@ -10,11 +10,11 @@ import withStyles, { WithStyles } from "material-ui/styles/withStyles"
 import createMuiTheme from "material-ui/styles/createMuiTheme"
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider"
 import red from "material-ui/colors/red"
-import Menu from 'material-ui/Menu';
-import ExpansionPanel, {
-    ExpansionPanelDetails,
-    ExpansionPanelSummary,
-} from 'material-ui/ExpansionPanel';
+import Menu from 'material-ui/Menu'
+import Radio, { RadioGroup } from 'material-ui/Radio'
+import { FormLabel, FormControl, FormControlLabel, FormHelperText, FormGroup } from 'material-ui/Form'
+import DrawStrategy from "../views/src/DrawStrategy"
+import Checkbox from 'material-ui/Checkbox'
 
 const style = () => ({
     container: {
@@ -38,16 +38,33 @@ const theme = createMuiTheme({
 
 type ComponentState = {
     menuAnchor: any,
-    expandedPanel: string
+    drawStrategy: any,
+    showHidden: boolean,
 }
 
-type ComponentProps = Object
+type ComponentProps = {
+    drawStrategy: any,
+    showHidden: boolean,
+    onDrawStrategyChanged: (drawStrategy: any, showHidden: boolean) => void
+}
 type ComponentPropsWithStyle = ComponentProps & WithStyles<'button' | 'container'>
 
 class WindowButtons extends React.Component<ComponentPropsWithStyle, ComponentState>{
     state = {
         menuAnchor: null,
-        expandedPanel: null
+        drawStrategy: this.props.drawStrategy,
+        showHidden: this.props.showHidden
+    }
+
+    static getDerivedStateFromProps(nextProps: ComponentProps, prevState: ComponentState) {
+        return {
+            drawStrategy: nextProps.drawStrategy,
+            showHidden: nextProps.showHidden
+        }
+    }
+
+    handleDrawStrategyChanged(drawStrategy: any, showHidden: boolean) {
+        this.props.onDrawStrategyChanged(drawStrategy, showHidden)
     }
 
     render() {
@@ -70,36 +87,46 @@ class WindowButtons extends React.Component<ComponentPropsWithStyle, ComponentSt
                         <MoreIcon />
                     </IconButton>
                     <Menu
-                        style={{ width: "100px;" }}
                         id="menu"
                         anchorEl={this.state.menuAnchor}
                         open={this.state.menuAnchor != null}
-                        onClose={() => { this.setState({ menuAnchor: null, expandedPanel: null }) }}
+                        onClose={() => { this.setState({ menuAnchor: null }) }}
                     >
-                        <ExpansionPanel
-                            expanded={this.state.expandedPanel == 'panel1'}
-                            onClick={() => this.setState({ expandedPanel: 'panel1' })}
-                        >
-                            <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-                                1
-                            </ExpansionPanelSummary>
-                            <ExpansionPanelDetails>
-                                Something
-                            </ExpansionPanelDetails>
-                        </ExpansionPanel>
-                        <ExpansionPanel
-                            expanded={this.state.expandedPanel == 'panel2'}
-                            onClick={() => this.setState({ expandedPanel: 'panel2' })}
-                        >
-                            <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-                                2
-                            </ExpansionPanelSummary>
-                            <ExpansionPanelDetails>
-                                Something
-                            </ExpansionPanelDetails>
-                        </ExpansionPanel>
+                        <FormGroup>
+                            <FormControl component="fieldset">
+                                <FormLabel component="legend">View type:</FormLabel>
+                                <RadioGroup
+                                    aria-label="drawStrategy"
+                                    name="drawStrategy"
+                                    value={this.props.drawStrategy == DrawStrategy.Icon ? "Icon" : "List"}
+                                    onChange={event => {
+                                        this.handleDrawStrategyChanged(
+                                            DrawStrategy[(event.target as any).value],
+                                            this.state.showHidden
+                                        )
+                                    }}
+                                >
+                                    <FormControlLabel value="Icon" control={<Radio color="primary" />} label="Icons" />
+                                    <FormControlLabel value="List" control={<Radio color="primary" />} label="List" />
+                                </RadioGroup>
+                            </FormControl>
+                            <FormControlLabel
+                                control={
+                                    <Checkbox
+                                        checked={this.state.showHidden}
+                                        onChange={event => {
+                                            this.handleDrawStrategyChanged(
+                                                this.state.drawStrategy,
+                                                !this.state.showHidden
+                                            )
+                                        }}
+                                        color="primary"
+                                    />
+                                }
+                                label="Show hidden"
+                            />
+                        </FormGroup>
                     </Menu>
-
                     <IconButton color="secondary" className={classes.button} onClick={() => { RemoteMainWindow.minimize() }}>
                         <MinimizeIcon />
                     </IconButton>
