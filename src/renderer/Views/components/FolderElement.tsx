@@ -29,7 +29,7 @@ const styles = () => ({
 
 type ComponentState = {
     folder: FolderDescription
-    content: Description[],
+    childs: any,
     watcherId: number,
     expanded: boolean
 }
@@ -43,14 +43,15 @@ type ComponentPropsWithStyle = ComponentProps & WithStyles<'container' | 'icon' 
 class FolderElementInternal extends React.Component<ComponentPropsWithStyle, ComponentState>{
     state = {
         folder: this.props.folder ? this.props.folder : { path: '/', name: '/' } as FolderDescription,
-        content: null,
+        childs: null,
         watcherId: null,
         expanded: false
     }
 
-    private async loadContent(): Promise<Description[]> {
+    private async loadContent(): Promise<any[]> {
         let content: Description[] = await RemoteFileSystem.getContent(this.state.folder.path);
-        return content.sort((a, b) => { return a.name > b.name ? 1 : -1 })
+        content = content.sort((a, b) => { return a.name > b.name ? 1 : -1 })
+        return this.generateChildElements(content)
     }
 
     private handleClick(event) {
@@ -63,10 +64,10 @@ class FolderElementInternal extends React.Component<ComponentPropsWithStyle, Com
         let watcherId = await RemoteFileSystem.setListenerForChanges(this.state.folder.path, (id) => {
             this.loadContent()
         })
-        let content = await this.loadContent()
+        let childs = await this.loadContent()
         this.setState({
             watcherId,
-            content,
+            childs,
             expanded: true
         })
     }
@@ -75,13 +76,13 @@ class FolderElementInternal extends React.Component<ComponentPropsWithStyle, Com
         await RemoteFileSystem.removeListenerForChanges(this.state.watcherId);
         this.setState({
             watcherId: null,
-            content: null,
+            childs: null,
             expanded: false
         })
     }
 
-    private generateChildElements() {
-        return this.state.content.map(entity => {
+    private generateChildElements(descs: Description[]) {
+        return descs.map(entity => {
             if(entity.name.charAt(0) == '.') return null
             if ('ext' in entity) return <FileElement file={entity} />
             return <FolderElement showHidden={this.props.showHidden} folder={entity} onDoubleClick={this.props.onDoubleClick} />
@@ -91,7 +92,7 @@ class FolderElementInternal extends React.Component<ComponentPropsWithStyle, Com
     render() {
         const { classes } = this.props
 
-        let child = this.state.expanded ? this.generateChildElements() : []
+        let childs = this.state.expanded ? this.state.childs : []
         let Icon = this.state.expanded ? OpenFolderIcon : FolderIcon
 
         return (
@@ -108,7 +109,7 @@ class FolderElementInternal extends React.Component<ComponentPropsWithStyle, Com
                     <div className={classes.name}>{this.state.folder.name}</div>
                 </div>
                 <div className={classes.childContainer}>
-                    {...child}
+                    {...childs}
                 </div>
             </div>
         )
