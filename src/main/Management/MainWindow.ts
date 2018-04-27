@@ -2,7 +2,7 @@ import url from "url"
 import path from "path"
 import { BrowserWindowConstructorOptions } from "electron"
 import Window from "./Window"
-import IMainWindow from "../common/IMainWindow"
+import IMainWindow from "../../common/IMainWindow"
 import AppManager from "./AppManager"
 
 export default class MainWindow extends Window implements IMainWindow {

@@ -11,7 +11,7 @@ import {
     RenameArgv, WrappedArgv,
     Argv, Answer, SetListenerArgv, RemoveListenerArgv, Listener
 } from "../../common/FileSystemConnection"
-import AppManager from "../AppManager"
+import AppManager from "../Management/AppManager"
 import FileSystemWatcherManager from "./FileSystemWatcherManager"
 
 class FileSystem implements IFileSystem {

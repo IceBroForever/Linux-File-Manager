@@ -1,3 +1,3 @@
-import AppManager from "./AppManager"
+import AppManager from "./Management/AppManager"
 
 AppManager.openNewMainWindow()
